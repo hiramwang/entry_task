@@ -1,0 +1,30 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script type="text/javascript">
+        function signIn()
+        {
+            document.getElementById("signin").submit()
+        }
+        function signUp()
+        {
+            document.getElementById("signup").submit()
+        }
+    </script>
+    <title>Welcome</title>
+  </head>
+  <body>
+    <h3>welcome ~~ </h3>
+    template data: {{ . }}
+
+
+    <form id="signin" action="login" method="get">
+    Account: <input type="text" name="account" size="20"><br />
+    Password: <input type="text" name="password" size="20"><br />
+    <br />
+    <form id="singup" action="register" method="get">
+    <br />
+<input type="button" onclick="signIn()" value="sign in">
+<input type="button" onclick="signUp()" value="sign up"> 
+  </body>
+</html>

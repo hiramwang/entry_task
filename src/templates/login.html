@@ -1,0 +1,49 @@
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script type="text/javascript">
+        function ChangeName()
+        {
+            document.getElementById("nickname").submit()
+        }
+        function ChangePhoto()
+        {   
+            document.getElementById("photo").submit()
+        }
+        function showPic(source) {
+            var file = source.files[0];
+            if(window.FileReader) {
+                var fr = new FileReader();
+                console.log(fr);
+                var portrait = document.getElementById('portrait');
+                fr.onloadend = function(e) {
+                portrait.src = e.target.result;
+            };
+            fr.readAsDataURL(file);
+            portrait.style.display = 'block';
+            }
+        }
+    </script>
+    <title>Welcome</title>
+  </head>
+  <body>
+    <h3>welcome ~~ </h3>
+
+    <form id="nickname" action="changeName" method="get">
+       <input type="hidden" name="account" size="20" value={{ . }}><br />
+       Nickname: <input type="text" name="nickname" size="20"><br />
+    </form>
+<input type="button" onclick="ChangeName()" value="change name">
+    <br />
+    <br />
+
+
+
+<img id="portrait" src="" style="display:none;" />
+<form id="photo" action="changePhoto?account={{ . }}" method="post" enctype="multipart/form-data">
+    <input type="file" accept="image/png,image/jpeg,image/gif" name="photo" id="thePic" onchange="showPic(this)">
+</form>
+<input type="button" onclick="ChangePhoto()" value="upload">
+  </body>
+</html>
