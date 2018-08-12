@@ -348,7 +348,6 @@ func (this *LoggerInfo) FlushBufferQueue() {
  * 错误日志备份
  * backupDir 待备份的目录
  * os中没有mv的函数，只能先rename，后remove
- * backupDir -> /data/messenger/servers/log/saver/trace/2014-09-10/*.log
  */
 func (this *LoggerInfo) LoggerBackup(hour time.Time) {
 	var oldFile string   //待备份文件
@@ -363,7 +362,6 @@ func (this *LoggerInfo) LoggerBackup(hour time.Time) {
 		os.MkdirAll(backupDir, os.ModePerm)
 	}
 
-	/* backup filename like saver-zwt-01-error.log.2014-09-10*/
 	oldFile = this.filename + "." + hour.Format(HOURFORMAT)
 	if stat, err := os.Stat(oldFile); err == nil {
 		newFile = filepath.Join(backupDir, stat.Name())
@@ -372,7 +370,6 @@ func (this *LoggerInfo) LoggerBackup(hour time.Time) {
 		}
 	}
 
-	/* backup filename like saver-zwt-01-error.log.2014-09-10.{0/1...} */
 	for i := 0; i < maxFileCount; i++ {
 		oldFile = this.filename + "." + hour.Format(HOURFORMAT) + "." + strconv.Itoa(i)
 		if stat, err := os.Stat(oldFile); err == nil {
