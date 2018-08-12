@@ -212,7 +212,7 @@ func (this *LoggerInfo) CreateFile() error {
 	var err error
 	hourStr := time.Now().Format(HOURFORMAT)
 	trueFilename := fmt.Sprintf("%v.%v", this.filename, hourStr)
-	this.logFile, err = os.OpenFile(trueFilename, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0777)
+	this.logFile, err = os.OpenFile(trueFilename, os.O_WRONLY|os.O_APPEND|os.O_CREATE, os.ModePerm)
 
 	os.Remove(this.filename)
 	os.Symlink(trueFilename, this.filename)
@@ -360,7 +360,7 @@ func (this *LoggerInfo) LoggerBackup(hour time.Time) {
 	}
 	backupDir = filepath.Join(this.backupDir, hour.Format(DATEFORMAT))
 	if _, err := os.Stat(backupDir); os.IsNotExist(err) {
-		os.MkdirAll(backupDir, 0777)
+		os.MkdirAll(backupDir, os.ModePerm)
 	}
 
 	/* backup filename like saver-zwt-01-error.log.2014-09-10*/

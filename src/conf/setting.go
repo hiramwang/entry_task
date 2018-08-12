@@ -45,7 +45,7 @@ func InitSetting() error {
 	PhotoPath = filepath.Join(rootPath, PhotoPath)
 
 	if _, err = os.Stat(PhotoPath); os.IsNotExist(err) {
-		err = os.Mkdir(PhotoPath, 0777)
+		err = os.Mkdir(PhotoPath, os.ModePerm)
 		if err != nil {
 			return errors.New("Creat log path fail: " + err.Error())
 		}
@@ -54,14 +54,14 @@ func InitSetting() error {
 	logDir := rootPath + "/log"
 	logBackDir := rootPath + "/logbak"
 	if _, err = os.Stat(logDir); os.IsNotExist(err) {
-		err = os.Mkdir(logDir, 0777)
+		err = os.Mkdir(logDir, os.ModePerm)
 		if err != nil {
 			return errors.New("Creat log path fail: " + err.Error())
 		}
 	}
 
 	if _, err = os.Stat(logBackDir); os.IsNotExist(err) {
-		err = os.Mkdir(logBackDir, 0777)
+		err = os.Mkdir(logBackDir, os.ModePerm)
 		if err != nil {
 			return errors.New("Creat log backup path fail: " + err.Error())
 		}
