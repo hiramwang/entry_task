@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/rpc"
 	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 	"tcpServer"
@@ -91,7 +92,7 @@ func BaseHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func IndexHandler(w http.ResponseWriter, req *http.Request) {
-	t, err := template.ParseFiles(conf.TemplatePath + "index.html")
+	t, err := template.ParseFiles(filepath.Join(conf.TemplatePath, "index.html"))
 	if t == nil {
 		conf.Log.Error("httpServer", "IndexHandler", err.Error())
 		return
@@ -115,7 +116,7 @@ func (h *Dispatcher) LoginHandler(w http.ResponseWriter, col *tcpServer.Col) {
 		return
 	}
 
-	t, _ := template.ParseFiles(conf.TemplatePath + "login.html")
+	t, _ := template.ParseFiles(filepath.Join(conf.TemplatePath, "login.html"))
 	if t == nil {
 		_, _ = w.Write(GetErrRes("5002"))
 		conf.Log.Error("httpServer", "IndexHandler", err.Error())

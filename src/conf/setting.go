@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 )
 
-const (
-	TemplatePath = "./templates/"
-	PhotoPath    = "./photo"
+var (
+	TemplatePath = "/src/templates/"
+	PhotoPath    = "/photo"
 	HttpAddr     = "127.0.0.1:8888"
 	TcpAddr      = "127.0.0.1"
 	TcpPort      = ":8880"
@@ -35,9 +35,20 @@ var (
 )
 
 func InitSetting() error {
-	rootPath, err := os.Getwd()
+	rootPath, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
 		return errors.New("Get rootPath fail: " + err.Error())
+	}
+	rootPath = rootPath + "/../"
+
+	TemplatePath = filepath.Join(rootPath, TemplatePath)
+	PhotoPath = filepath.Join(rootPath, PhotoPath)
+
+	if _, err = os.Stat(PhotoPath); os.IsNotExist(err) {
+		err = os.Mkdir(PhotoPath, 0777)
+		if err != nil {
+			return errors.New("Creat log path fail: " + err.Error())
+		}
 	}
 
 	logDir := rootPath + "/log"
