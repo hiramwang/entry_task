@@ -14,17 +14,26 @@
     <title>Welcome</title>
   </head>
   <body>
-    <h3>welcome ~~ </h3>
-    template data: {{ . }}
+    {{ . }}
+    <h3>Sign In </h3>
 
 
     <form id="signin" action="login" method="get">
     Account: <input type="text" name="account" size="20"><br />
     Password: <input type="text" name="password" size="20"><br />
-    <br />
-    <form id="singup" action="register" method="get">
+    </form>
     <br />
 <input type="button" onclick="signIn()" value="sign in">
+    <br />
+    <br /> 
+    <br />
+    <h3>Sign Up</h3>
+    <form id="signup" action="register" method="get">
+    Account: <input type="text" name="account" size="20"><br />
+    Password: <input type="text" name="password" size="20"><br />
+    Nickname: <input type="text" name="nickname" size="20"><br />
+    </form>
+    <br />
 <input type="button" onclick="signUp()" value="sign up"> 
   </body>
 </html>

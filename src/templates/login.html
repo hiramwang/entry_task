@@ -28,8 +28,8 @@
     <title>Welcome</title>
   </head>
   <body>
-    <h3>welcome ~~ </h3>
-
+      <h3>welcome ~~ {{ . }} </h3>
+      <h4>Change nickname </h4>
     <form id="nickname" action="changeName" method="get">
        <input type="hidden" name="account" size="20" value={{ . }}><br />
        Nickname: <input type="text" name="nickname" size="20"><br />
@@ -37,9 +37,9 @@
 <input type="button" onclick="ChangeName()" value="change name">
     <br />
     <br />
-
-
-
+    <br />
+    <br />
+      <h4>Change photo</h4>
 <img id="portrait" src="" style="display:none;" />
 <form id="photo" action="changePhoto?account={{ . }}" method="post" enctype="multipart/form-data">
     <input type="file" accept="image/png,image/jpeg,image/gif" name="photo" id="thePic" onchange="showPic(this)">

@@ -74,7 +74,7 @@ func conCheck() {
 }
 
 func (c *MysqlClient) InsertUser(col *Col) error {
-	_, err := c.StmtIns.Exec(col.Account, col.Nickname, col.Password)
+	_, err := c.StmtIns.Exec(col.Account, col.Password, col.Nickname)
 	return err
 }
 

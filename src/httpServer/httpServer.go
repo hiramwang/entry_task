@@ -3,7 +3,6 @@ package httpServer
 import (
 	"conf"
 	"encoding/json"
-	"fmt"
 	"html/template"
 	"io"
 	"net/http"
@@ -55,8 +54,6 @@ func BaseHandler(w http.ResponseWriter, req *http.Request) {
 		_, _ = w.Write(GetErrRes("5001"))
 		return
 	}
-
-	fmt.Println(req.Form)
 
 	account := req.FormValue("account")
 	if account == "" {
@@ -119,7 +116,7 @@ func (h *Dispatcher) LoginHandler(w http.ResponseWriter, col *tcpServer.Col) {
 	t, _ := template.ParseFiles(filepath.Join(conf.TemplatePath, "login.html"))
 	if t == nil {
 		_, _ = w.Write(GetErrRes("5002"))
-		conf.Log.Error("httpServer", "IndexHandler", err.Error())
+		conf.Log.Error("httpServer", "LoginHandler", err.Error())
 	} else {
 		t.Execute(w, col.Account)
 	}
@@ -129,7 +126,7 @@ func (h *Dispatcher) RegisterHandler(w http.ResponseWriter, col *tcpServer.Col) 
 
 	if col.Password == "" {
 		_, _ = w.Write(GetErrRes("4002"))
-		conf.Log.Trace("httpServer", "LoginHandler", conf.ErrType["4002"])
+		conf.Log.Trace("httpServer", "RegisterHandler", conf.ErrType["4002"])
 		return
 	}
 
@@ -137,7 +134,16 @@ func (h *Dispatcher) RegisterHandler(w http.ResponseWriter, col *tcpServer.Col) 
 	err := RpcClient.Call("Logic.Register", col, &reply)
 	if err != nil {
 		_, _ = w.Write(GetErrRes(err.Error()))
-		conf.Log.Error("httpServer", "LoginHandler", err.Error())
+		conf.Log.Error("httpServer", "RegisterHandler", err.Error())
+	} else {
+		t, _ := template.ParseFiles(filepath.Join(conf.TemplatePath, "login.html"))
+		if t == nil {
+			_, _ = w.Write(GetErrRes("5002"))
+			conf.Log.Error("httpServer", "LoginHandler", err.Error())
+		} else {
+			t.Execute(w, col.Account)
+		}
+
 	}
 }
 
