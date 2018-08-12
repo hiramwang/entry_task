@@ -2,7 +2,7 @@
 
 >* HttpServer receives http requests and transfer the parameters to tcpServer, tcpServer check the data in request such as if password is correct and query redis and mysql database. Users data store in mysql, if there is cache in redis, tcpServer will use cache first. Just like chart below.
 
-![](https://ws1.sinaimg.cn/large/006tNbRwgy1fu7c8ry359j30yc1a0tat.jpg)
+![](resource/entry_task_design.jpg)
 
 # Installation and maintenance documentation
 
