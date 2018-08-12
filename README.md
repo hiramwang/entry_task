@@ -111,18 +111,18 @@ cd src/tcpServer && go test
 ab -c 1000 -n 10000 "http://127.0.0.1:8888/login?account=hiram521&password=hiramwang"
 ```
 
-![](https://ws3.sinaimg.cn/large/006tNbRwgy1fu75r5uhjxj30we0rs0yu.jpg)
+![](resource/entry_task_cocu.jpg)
 
 #### Different user request testing
 ```
 siege -c 200 -t 1600 -f testUrl_1000
 ```
 > * test with out cache:
-![](https://ws1.sinaimg.cn/large/006tNbRwgy1fu764w9o04j30l20a2mz5.jpg)
+![](resource/entry_task_nocache.jpg)
 
 
 > * test with cache:
-![](https://ws2.sinaimg.cn/large/006tNbRwgy1fu761da188j30nq09y40i.jpg)
+![](resource/entry_task_siege.jpg)
 
 #### tips
 > change system limits before run server such as open files limit, it can help server recepts more request. And the code below can help go server takes the maximum number of CPUs that can be executing.
