@@ -13,4 +13,5 @@ echo "building entry_task"
 cd src
 go build -o entry_task
 cd -
+mkdir -p bin
 mv src/entry_task bin/

@@ -22,10 +22,10 @@ var (
 
 var ErrType map[string]string = map[string]string{
 	"":     "default error",
-	"4000": "Request parse fail",
-	"4001": "Account does not exist",
-	"4002": "Password invalid",
-	"4003": "Nickname invalid",
+	"4000": "Request parse fail, check your request",
+	"4001": "Account does not exist, you must have parameter account",
+	"4002": "Password invalid, wrong password, try again",
+	"4003": "Nickname invalid, parameters need to have nickname",
 	"5001": "rpc server error",
 	"5002": "httpserver error",
 }

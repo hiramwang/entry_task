@@ -77,6 +77,18 @@ func (l *Logic) UpdateNickname(args *Col, reply *string) error {
 	if err != nil {
 		return errors.New("Update mysql error: " + err.Error())
 	}
+
+	// refresh redis
+	userData := MC.GetUser(args.Account)
+	if userData == nil {
+		conf.Log.Error("TcpServer", "UpdateNickname", "mysql error: ", "get "+args.Account+" fail")
+	} else {
+		dataBt, err := json.Marshal(userData)
+		err = RC.Set(userData.Account, string(dataBt), ExpireT).Err()
+		if err != nil {
+			conf.Log.Error("TcpServer", "LoginCheck", "Redis set error", err.Error())
+		}
+	}
 	return nil
 }
 

@@ -12,6 +12,7 @@ import (
 	"reflect"
 	"strings"
 	"tcpServer"
+	"time"
 )
 
 var (
@@ -27,7 +28,9 @@ type Dispatcher struct{}
 
 func FrontServer() {
 	s := &http.Server{
-		Addr: conf.HttpAddr,
+		Addr:         conf.HttpAddr,
+		ReadTimeout:  time.Minute,
+		WriteTimeout: time.Minute,
 	}
 
 	http.HandleFunc("/", BaseHandler)
