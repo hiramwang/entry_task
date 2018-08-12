@@ -1,8 +1,8 @@
 package tcpServer
 
 import (
+	"conf"
 	"database/sql"
-	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"time"
 )
@@ -31,14 +31,14 @@ var MC *MysqlClient
 func init() {
 	MC = &MysqlClient{
 		DBSql:     nil,
-		DBName:    "mysql",
-		TableName: "shopee_test",
-		UserName:  "hiram",
-		Password:  "hiram",
+		DBName:    conf.MysqlDB,
+		TableName: conf.MysqlTable,
+		UserName:  conf.MysqlUser,
+		Password:  conf.MysqlPass,
 	}
 
 	var err error
-	MC.DBSql, err = sql.Open("mysql", "hiram:hiram@/mysql")
+	MC.DBSql, err = sql.Open("mysql", MC.UserName+":"+MC.Password+"@/"+MC.DBName)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -90,7 +90,6 @@ func (c *MysqlClient) GetUser(account string) *Col {
 }
 
 func (c *MysqlClient) UpdateNickname(changeValue string, account string) error {
-	res, err := c.StmtUpdate.Exec(changeValue, account)
-	fmt.Println(res)
+	_, err := c.StmtUpdate.Exec(changeValue, account)
 	return err
 }

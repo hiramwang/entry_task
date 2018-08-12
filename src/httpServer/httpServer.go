@@ -1,6 +1,7 @@
 package httpServer
 
 import (
+	"conf"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -11,20 +12,11 @@ import (
 	"reflect"
 	"strings"
 	"tcpServer"
-	"time"
 )
 
 var (
-	TemplatePath = "./templates/"
-	RpcClient    *rpc.Client
-	PhotoPath    = "./photo"
+	RpcClient *rpc.Client
 )
-
-type HttpEtc struct {
-	FrontListen  string
-	ReadTimeout  time.Duration
-	WriteTimeout time.Duration
-}
 
 type HttpResponse struct {
 	Code   string
@@ -33,9 +25,9 @@ type HttpResponse struct {
 
 type Dispatcher struct{}
 
-func FrontServer(etc *HttpEtc) {
+func FrontServer() {
 	s := &http.Server{
-		Addr: etc.FrontListen,
+		Addr: conf.HttpAddr,
 	}
 
 	http.HandleFunc("/", BaseHandler)
@@ -43,14 +35,13 @@ func FrontServer(etc *HttpEtc) {
 
 	err := s.ListenAndServe()
 	if err != nil {
-		fmt.Println("  panic  ")
-		panic(err)
+		panic("Http server start fail: " + err.Error())
 	}
 
 }
 
 func BaseHandler(w http.ResponseWriter, req *http.Request) {
-	return
+	conf.Log.Trace("httpServer", "request", req.RequestURI)
 
 	err := req.ParseForm()
 	if err != nil {
@@ -59,7 +50,7 @@ func BaseHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if RpcClient == nil && DialRpc() != nil {
-		// rpc error
+		conf.Log.Error("httpServer", "BaseHandler", "DialRpc fail")
 		_, _ = w.Write(GetErrRes("5001"))
 		return
 	}
@@ -89,20 +80,21 @@ func BaseHandler(w http.ResponseWriter, req *http.Request) {
 		req.ParseMultipartForm(32 << 20)
 		file, _, err := req.FormFile("photo")
 		if err != nil {
-			fmt.Println(err)
+			conf.Log.Error("httpServer", "BaseHandler", err.Error())
 			return
 		}
 		defer file.Close()
 		CheckDirExist()
-		f, err := os.OpenFile(strings.Join([]string{PhotoPath, account}, "/"), os.O_WRONLY|os.O_CREATE, 0666)
+		f, err := os.OpenFile(strings.Join([]string{conf.PhotoPath, account}, "/"), os.O_WRONLY|os.O_CREATE, 0666)
 		io.Copy(f, file)
 	}
 }
 
 func IndexHandler(w http.ResponseWriter, req *http.Request) {
-	t, err := template.ParseFiles(TemplatePath + "index.html")
+	t, err := template.ParseFiles(conf.TemplatePath + "index.html")
 	if t == nil {
-		panic(err)
+		conf.Log.Error("httpServer", "IndexHandler", err.Error())
+		return
 	}
 	t.Execute(w, "Hello")
 }
@@ -111,6 +103,7 @@ func (h *Dispatcher) LoginHandler(w http.ResponseWriter, col *tcpServer.Col) {
 
 	if col.Password == "" {
 		_, _ = w.Write(GetErrRes("4002"))
+		conf.Log.Trace("httpServer", "LoginHandler", conf.ErrType["4002"])
 		return
 	}
 
@@ -118,12 +111,14 @@ func (h *Dispatcher) LoginHandler(w http.ResponseWriter, col *tcpServer.Col) {
 	err := RpcClient.Call("Logic.LoginCheck", col, &reply)
 	if err != nil {
 		_, _ = w.Write(GetErrRes(err.Error()))
+		conf.Log.Error("httpServer", "LoginHandler", err.Error())
 		return
 	}
 
-	t, _ := template.ParseFiles(TemplatePath + "login.html")
+	t, _ := template.ParseFiles(conf.TemplatePath + "login.html")
 	if t == nil {
 		_, _ = w.Write(GetErrRes("5002"))
+		conf.Log.Error("httpServer", "IndexHandler", err.Error())
 	} else {
 		t.Execute(w, col.Account)
 	}
@@ -133,12 +128,15 @@ func (h *Dispatcher) RegisterHandler(w http.ResponseWriter, col *tcpServer.Col) 
 
 	if col.Password == "" {
 		_, _ = w.Write(GetErrRes("4002"))
+		conf.Log.Trace("httpServer", "LoginHandler", conf.ErrType["4002"])
+		return
 	}
 
 	var reply string
 	err := RpcClient.Call("Logic.Register", col, &reply)
 	if err != nil {
 		_, _ = w.Write(GetErrRes(err.Error()))
+		conf.Log.Error("httpServer", "LoginHandler", err.Error())
 	}
 }
 
@@ -146,32 +144,35 @@ func (h *Dispatcher) ChangeNameHandler(w http.ResponseWriter, col *tcpServer.Col
 
 	if col.Nickname == "" {
 		_, _ = w.Write(GetErrRes("4003"))
+		conf.Log.Trace("httpServer", "ChangeNameHandler", conf.ErrType["4003"])
+		return
 	}
 
 	var reply string
 	err := RpcClient.Call("Logic.UpdateNickname", col, &reply)
 	if err != nil {
 		_, _ = w.Write(GetErrRes(err.Error()))
+		conf.Log.Error("httpServer", "ChangeNameHandler", err.Error())
 	}
 }
 
 func DialRpc() error {
 	var err error
-	RpcClient, err = rpc.DialHTTP("tcp", "127.0.0.1:8880")
+	RpcClient, err = rpc.DialHTTP("tcp", conf.TcpAddr+conf.TcpPort)
 	return err
 }
 
 func GetErrRes(code string) []byte {
 	res := &HttpResponse{
 		Code:   code,
-		Reason: tcpServer.ErrType[code],
+		Reason: conf.ErrType[code],
 	}
 	s, _ := json.Marshal(res)
 	return s
 }
 
 func CheckDirExist() {
-	if _, err := os.Stat(PhotoPath); os.IsNotExist(err) {
-		os.Mkdir(PhotoPath, os.ModePerm)
+	if _, err := os.Stat(conf.PhotoPath); os.IsNotExist(err) {
+		os.Mkdir(conf.PhotoPath, os.ModePerm)
 	}
 }

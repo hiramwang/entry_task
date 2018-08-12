@@ -1,6 +1,7 @@
 package main
 
 import (
+	"conf"
 	"httpServer"
 	"math/rand"
 	"runtime"
@@ -13,21 +14,14 @@ func init() {
 
 	rand.Seed(time.Now().UnixNano())
 
-	//if err := conf.InitSetting(); err != nil {
-	//		panic(err)
-	//}
+	if err := conf.InitSetting(); err != nil {
+		panic(err)
+	}
 }
 
 func main() {
 
-	//go api.FrontServer()
-	httpEtc := &httpServer.HttpEtc{
-		FrontListen:  "127.0.0.1:8888",
-		ReadTimeout:  100,
-		WriteTimeout: 100,
-	}
-
-	go httpServer.FrontServer(httpEtc)
+	go httpServer.FrontServer()
 	go tcpServer.RpcServer()
 
 	select {}
