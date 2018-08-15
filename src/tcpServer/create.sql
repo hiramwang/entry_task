@@ -1,3 +1,4 @@
+use mysql;
 CREATE TABLE `shopee_test` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `account` varchar(40) NOT NULL,
@@ -6,4 +7,7 @@ CREATE TABLE `shopee_test` (
   `extend` varchar(40) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `account` (`account`)
-) ENGINE=InnoDB AUTO_INCREMENT=8113496 DEFAULT CHARSET=utf8 
+) ENGINE=InnoDB AUTO_INCREMENT=8113496 DEFAULT CHARSET=utf8; 
+insert into mysql.user(Host,User,Password) values("localhost","hiram",password("hiram"));
+grant all privileges on mysql.* to hiram@localhost Identified by "hiram";
+flush privileges;

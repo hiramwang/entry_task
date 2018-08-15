@@ -9,7 +9,7 @@ import (
 var (
 	TemplatePath = "/src/templates/"
 	PhotoPath    = "/photo"
-	HttpAddr     = "127.0.0.1:8888"
+	HttpAddr     = "0.0.0.0:8888"
 	TcpAddr      = "127.0.0.1"
 	TcpPort      = ":8880"
 	RedisAddr    = "127.0.0.1:6379"
