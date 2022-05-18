@@ -133,9 +133,6 @@ runtime.GOMAXPROCS(runtime.NumCPU())
 # Concluding
 
 >* This entry task makes me learn how to use golang to create http and tcp server, and build a simple system with mysql and redis. This project can meet the requirements that are listed. But there are still many things could be done, include web UI, authentication security, performance promotion, http interaction standardizing, function testing.
-
-
-
 ---
 
 
